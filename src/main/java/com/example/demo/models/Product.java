@@ -1,9 +1,14 @@
 package com.example.demo.models;
 
+import java.util.Set;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -31,6 +36,15 @@ public class Product {
    @NotBlank
    @Min(value = 0, message = "Stocl must be greater than or equal to 0")
    private int stock;
+
+   @ManyToMany
+    @JoinTable(
+        name = "product_category",
+        joinColumns = @JoinColumn(name = "product_id"),
+        inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories;
+
 
     //acesores
     public Product(){

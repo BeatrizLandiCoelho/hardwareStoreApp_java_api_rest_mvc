@@ -1,9 +1,12 @@
 package com.example.demo.models;
 
+import java.util.Set;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
@@ -18,6 +21,9 @@ public class Category {
     @NotEmpty
     @Size(min=2,max = 255,message = "name must be betwenn 2 and 255")
     private String name;
+
+    @ManyToMany(mappedBy = "categories")
+    private Set<Product> products;
 
     //acessores
     public Category(){
