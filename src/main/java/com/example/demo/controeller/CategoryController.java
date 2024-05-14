@@ -52,8 +52,8 @@ public class CategoryController {
     // Get by id
     // _________________________________________________________________________________________
 
-    @GetMapping("category{id}")
-    public ResponseEntity<Category> getCategoryById(@RequestParam Long id) {
+    @GetMapping("category/{id}")
+    public ResponseEntity<Category> getCategoryById(@PathVariable("id") Long id) {
 
         try {
 
@@ -88,26 +88,28 @@ public class CategoryController {
 
     }
 
-    // Updtae
+    // Update
     // _________________________________________________________________________________________
     @PutMapping("/category/{id}")
-    public ResponseEntity<Category> updateUser(@PathVariable("id") Long id, @RequestBody Category categoryData) {
+    public ResponseEntity<Category> updateCategory(@PathVariable("id") Long id, @RequestBody Category categoryDetails) {
 
         try {
-            Category existingCategory = categoryRepository.findById(id).orElse(null);
 
-            if (existingCategory != null) {
-                existingCategory.setName(categoryData.getName());
+            Optional<Category> optionalCategory = categoryRepository.findById(id);
 
-                Category updatedCategory = categoryRepository.save(existingCategory);
+            if (optionalCategory.isPresent()) {
+                Category category = optionalCategory.get();
+                category.setName(categoryDetails.getName()); 
+
+                Category updatedCategory = categoryRepository.save(category);
                 return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     // Delete
@@ -129,6 +131,6 @@ public class CategoryController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-     }
+    }
 
 }
