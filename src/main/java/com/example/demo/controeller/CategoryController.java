@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +27,8 @@ public class CategoryController {
 
     // metodos
 
-    // Get
+    // Get_________________________________________________________________________________________
+
     @GetMapping("/categorys")
     public ResponseEntity<List<Category>> getAllCategorys() {
 
@@ -50,6 +50,8 @@ public class CategoryController {
     }
 
     // Get by id
+    // _________________________________________________________________________________________
+
     @GetMapping("category{id}")
     public ResponseEntity<Category> getCategoryById(@RequestParam Long id) {
 
@@ -60,7 +62,7 @@ public class CategoryController {
             if (category.isPresent()) {
                 return new ResponseEntity<>(category.get(), HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
         } catch (Exception e) {
@@ -70,8 +72,9 @@ public class CategoryController {
     }
 
     // Post
+    // _________________________________________________________________________________________
     @PostMapping("/category")
-    public ResponseEntity postCategory(@RequestBody Category category) {
+    public ResponseEntity<Category> postCategory(@RequestBody Category category) {
 
         try {
 
@@ -80,35 +83,52 @@ public class CategoryController {
             return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
 
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     // Updtae
+    // _________________________________________________________________________________________
     @PutMapping("/category/{id}")
     public ResponseEntity<Category> updateUser(@PathVariable("id") Long id, @RequestBody Category categoryData) {
-        Category existingCategory = categoryRepository.findById(id).orElse(null);
 
-        if (existingCategory != null) {
-            existingCategory.setName(categoryData.getName());
-
-            Category updatedCategory = categoryRepository.save(existingCategory);
-            return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    // Delete
-    @DeleteMapping("/category/{id}")
-    public ResponseEntity<HttpStatus> deleteCategory(@PathVariable("id") Long id) {
         try {
-            categoryRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            Category existingCategory = categoryRepository.findById(id).orElse(null);
+
+            if (existingCategory != null) {
+                existingCategory.setName(categoryData.getName());
+
+                Category updatedCategory = categoryRepository.save(existingCategory);
+                return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
     }
+
+    // Delete
+    // _________________________________________________________________________________________
+    @DeleteMapping("/category/{id}")
+    public ResponseEntity<HttpStatus> deleteCategory(@PathVariable("id") Long id) {
+
+        try {
+
+            Category existingCategory = categoryRepository.findById(id).orElse(null);
+
+            if (existingCategory != null) {
+                categoryRepository.deleteById(id);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+     }
 
 }
