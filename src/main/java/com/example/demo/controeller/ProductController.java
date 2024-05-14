@@ -14,6 +14,7 @@ import com.example.demo.models.Product;
 import com.example.demo.repositorys.ProductRepository;
 import org.springframework.web.bind.annotation.PathVariable;
 
+
 @RestController
 public class ProductController {
 
@@ -54,8 +55,11 @@ public class ProductController {
 
             Optional<Product> product = productRepository.findById(id);
     
-             return product.map(ResponseEntity::ok)
-                     .orElseGet(() -> ResponseEntity.notFound().build());
+            if (product.isPresent()) {
+                return new ResponseEntity<>(product.get(), HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
 
          }catch(Exception e){
 
@@ -78,5 +82,6 @@ public class ProductController {
     }
 
     // Update
+    
 
 }
