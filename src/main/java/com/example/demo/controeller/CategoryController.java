@@ -19,91 +19,88 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
-
 @RestController
 public class CategoryController {
-    
-    //autowired
-    @Autowired CategoryRepository categoryRepository;
 
-    //metodos
+    // autowired
+    @Autowired
+    CategoryRepository categoryRepository;
 
-    //get
+    // metodos
+
+    // Get
     @GetMapping("/categorys")
-    public ResponseEntity<List<Category>> getAllCategorys(){
-        
+    public ResponseEntity<List<Category>> getAllCategorys() {
+
         try {
 
-             List<Category> categoryList = categoryRepository.findAll();
+            List<Category> categoryList = categoryRepository.findAll();
 
-             if(categoryList.isEmpty()){
+            if (categoryList.isEmpty()) {
 
-             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        }else{
+            } else {
 
-            return new ResponseEntity<>(categoryList, HttpStatus.OK);
-        }
+                return new ResponseEntity<>(categoryList, HttpStatus.OK);
+            }
         } catch (Exception e) {
-            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
-        }   
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
+    // Get by id
     @GetMapping("category{id}")
-    public ResponseEntity <Category> getCategoryById(@RequestParam Long id) {
+    public ResponseEntity<Category> getCategoryById(@RequestParam Long id) {
 
         try {
 
-             Optional<Category> category = categoryRepository.findById(id);
+            Optional<Category> category = categoryRepository.findById(id);
 
-             if (category.isPresent()) {
-                  return new ResponseEntity<>(category.get(), HttpStatus.OK);
-             }else{
+            if (category.isPresent()) {
+                return new ResponseEntity<>(category.get(), HttpStatus.OK);
+            } else {
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-             }
-            
-        } catch (Exception e) {
-            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        
-    }
-    
+            }
 
-    //post
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    // Post
     @PostMapping("/category")
     public ResponseEntity postCategory(@RequestBody Category category) {
-        
+
         try {
 
             Category newCategory = categoryRepository.save(category);
-        
-            return new ResponseEntity<>(newCategory,HttpStatus.CREATED);
+
+            return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
 
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    
 
     }
-    
-    //updtae
-    @PutMapping("/category/{id}")
-        public ResponseEntity<Category> updateUser(@PathVariable("id") Long id, @RequestBody Category categoryData) {
-            Category existingCategory = categoryRepository.findById(id).orElse(null);
 
-         if (existingCategory != null) {
+    // Updtae
+    @PutMapping("/category/{id}")
+    public ResponseEntity<Category> updateUser(@PathVariable("id") Long id, @RequestBody Category categoryData) {
+        Category existingCategory = categoryRepository.findById(id).orElse(null);
+
+        if (existingCategory != null) {
             existingCategory.setName(categoryData.getName());
 
             Category updatedCategory = categoryRepository.save(existingCategory);
             return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
-         } else {
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    //delete
-
+    // Delete
     @DeleteMapping("/category/{id}")
     public ResponseEntity<HttpStatus> deleteCategory(@PathVariable("id") Long id) {
         try {
