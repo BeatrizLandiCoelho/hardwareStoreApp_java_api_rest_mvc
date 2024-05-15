@@ -24,7 +24,7 @@ public class Category {
     @Size(min = 2, max = 255, message = "name must be betwenn 2 and 255")
     private String name;
 
-    @ManyToMany
+    @ManyToMany()
     private Set<Product> products = new HashSet<>();
 
 

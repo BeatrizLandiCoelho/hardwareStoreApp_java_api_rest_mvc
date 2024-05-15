@@ -16,7 +16,6 @@ public class ProductCategory {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-
     private Product product;
 
     @ManyToOne
