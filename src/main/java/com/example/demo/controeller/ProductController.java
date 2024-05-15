@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.models.Category;
 import com.example.demo.models.Product;
 import com.example.demo.repositorys.ProductRepository;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,11 +53,10 @@ public class ProductController {
 
     }
 
-    // GET by
-    // id_________________________________________________________________________________________
+    // GET by_________________________________________________________________________________________
 
-    @GetMapping("/products/{id}") // Use path variable for ID
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+    @GetMapping("/product/{id}") 
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) {
 
         try {
 
@@ -90,30 +91,29 @@ public class ProductController {
     }
 
     // Update_________________________________________________________________________________________
-    @PutMapping("produuct/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody Product productData) {
+        @PutMapping("/product/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody Product productDetails) {
 
         try {
-            Product existingProduct = productRepository.findById(id).orElse(null);
 
-            if (existingProduct != null) {
+            Optional<Product> optionalProduct = productRepository.findById(id);
 
-                existingProduct.setName(productData.getName());
+            if (optionalProduct.isPresent()) {
+                Product product = optionalProduct.get();
+                product.setName(productDetails.getName()); 
 
-                Product updateProduct = productRepository.save(existingProduct);
+                Product updatedProduct = productRepository.save(product);
+                return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
 
-                return new ResponseEntity<>(updateProduct, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
         } catch (Exception e) {
-
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
-
     }
+
 
     // Delete__________________________________________________________________________________________________
     @DeleteMapping("/product/{id}")

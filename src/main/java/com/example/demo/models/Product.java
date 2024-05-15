@@ -1,12 +1,14 @@
 package com.example.demo.models;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -28,6 +30,9 @@ public class Product {
 
     @Min(value = 0, message = "Stocl must be greater than or equal to 0")
     private int stock;
+
+    @ManyToMany(mappedBy = "products")
+    private Set<Category> categories = new HashSet<>();
 
     // acesores
     public Product() {
